@@ -4,6 +4,8 @@ from urllib.parse import quote_plus
 from flask import Flask
 from controllers.db_controller import db_bp
 from controllers.auth_controller import auth_bp
+from controllers.applicant_controller import applicant_bp
+from controllers.hr_controller import hr_bp
 from dotenv import load_dotenv
 
 from models import db
@@ -22,7 +24,8 @@ app = Flask(
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 app.register_blueprint(db_bp)
 app.register_blueprint(auth_bp)
-
+app.register_blueprint(applicant_bp)
+app.register_blueprint(hr_bp)
 
 mysql_user = os.getenv("MYSQL_USER", "root")
 mysql_password = os.getenv("MYSQL_PASSWORD", "")

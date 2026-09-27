@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Applicant Dashboard</title>
+    <title>HR Dashboard</title>
 
     <style>
         body {
@@ -53,14 +53,10 @@
             margin-top: 0;
         }
 
-        .user-info {
-            margin-top: 25px;
-        }
-
         .info-box {
             background: #fff8f2;
             padding: 15px;
-            margin-bottom: 12px;
+            margin-top: 15px;
             border-radius: 8px;
         }
     </style>
@@ -70,9 +66,10 @@
 
     <div class="navbar">
         <h2>Internship Application System</h2>
-<a href="{{ url_for('auth.logout') }}" class="logout-btn">
-    Logout
-</a>
+
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            Logout
+        </a>
     </div>
 
     <div class="dashboard">
@@ -81,22 +78,18 @@
 
             <h1>Welcome, {{ name }}!</h1>
 
-            <p>You have successfully logged in to the Applicant Dashboard.</p>
+            <p>You have successfully logged in as an HR Manager.</p>
 
-            <div class="user-info">
+            <div class="info-box">
+                <strong>Name:</strong> {{ name }}
+            </div>
 
-                <div class="info-box">
-                    <strong>Name:</strong> {{ name }}
-                </div>
+            <div class="info-box">
+                <strong>Email:</strong> {{ email }}
+            </div>
 
-                <div class="info-box">
-                    <strong>Email:</strong> {{ email }}
-                </div>
-
-                <div class="info-box">
-                    <strong>Role:</strong> Applicant
-                </div>
-
+            <div class="info-box">
+                <strong>Role:</strong> HR Manager
             </div>
 
         </div>

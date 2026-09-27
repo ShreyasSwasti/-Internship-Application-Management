@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+    <div class="login-card">
+
+        <div class="icon">💼</div>
+
+        <h1>Internship Application</h1>
+        <p>Login to access your dashboard</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form id="login-form" method="POST" action="{{ url_for('auth.login') }}">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+            </div>
+
+            <button type="submit" id="login-submit-btn" class="btn-login">
+                Login
+            </button>
+
+        </form>
+
+        <p>
+            Don't have an account?
+            <a id="register-link" href="{{ url_for('auth.register') }}">Register here</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

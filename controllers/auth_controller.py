@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash , session
 
 from models.user_model import get_user_by_email, create_applicant
 
@@ -62,3 +62,47 @@ def register():
         return render_template("register.html")
 
     return render_template("register.html")
+
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+
+        # Check if fields are empty
+        if not email or not password:
+            flash("Email and password are required", "error")
+            return render_template("login.html")
+
+        # Find user by email
+        user = get_user_by_email(email)
+
+        # Check credentials
+        if not user or user["password"] != password:
+            flash("Invalid email or password", "error")
+            return render_template("login.html")
+
+        # Store user information in session
+        session["user_id"] = user["id"]
+        session["name"] = user["name"]
+        session["email"] = user["email"]
+        session["role"] = user["role"]
+
+        # Redirect based on role
+        if user["role"] == "HR Manager":
+            return redirect(url_for("hr.dashboard"))
+
+        return redirect(url_for("applicant.dashboard"))
+
+    return render_template("login.html")
+
+@auth_bp.route("/logout")
+def logout():
+
+    session.clear()
+
+    flash("You have been logged out successfully.", "success")
+
+    return redirect(url_for("auth.login"))

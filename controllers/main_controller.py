@@ -5,4 +5,4 @@ main_controller = Blueprint("main_controller", __name__)
 
 @main_controller.route("/", methods=["GET"])
 def home():
-    return redirect(url_for("auth.register"))
+    return redirect(url_for("auth.login"))

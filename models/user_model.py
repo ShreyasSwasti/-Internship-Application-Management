@@ -33,3 +33,19 @@ def create_applicant(name, email, password, qualification):
             "qualification": qualification
         }
     )
+    
+    def authenticate_user(email, password):
+        user = get_user_by_email(email)
+
+    if not user:
+        return None
+
+    if user["password"] != password:
+        return None
+
+    return {
+        "id": user["id"],
+        "name": user["name"],
+        "email": user["email"],
+        "role": user["role"]
+    }
