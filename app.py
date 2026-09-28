@@ -1,7 +1,7 @@
 import os
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus 
 
-from flask import Flask
+from flask import Flask ,render_template
 from controllers.db_controller import db_bp
 from controllers.auth_controller import auth_bp
 from controllers.applicant_controller import applicant_bp
@@ -26,6 +26,10 @@ app.register_blueprint(db_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(applicant_bp)
 app.register_blueprint(hr_bp)
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
 
 mysql_user = os.getenv("MYSQL_USER", "root")
 mysql_password = os.getenv("MYSQL_PASSWORD", "")
