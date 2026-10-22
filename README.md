@@ -1,92 +1,37 @@
 # Internship Application Management System
 
-A Flask-based web application for managing internship applications, applicant registration, authentication, and role-based access for Applicants and HR Managers.
+A web-based application built using Python Flask and MySQL to manage internship applications and provide separate access for Applicants and HR Managers.
 
 ## 📌 Project Overview
 
-The **Internship Application Management System** is a web-based application developed using **Python Flask and MySQL**.
+The Internship Application Management System is developed to simplify the process of managing internship applications. It allows applicants to register and log in, while HR Managers can access a separate dashboard to manage application-related activities.
 
-The system is being developed incrementally through multiple tasks. The current implementation provides:
-
-* Applicant registration
-* MySQL database integration
-* User authentication
-* Session management
-* Role-based access control
-* Applicant dashboard
-* HR Manager dashboard
-* Protected routes
-* Logout functionality
-
-The project is designed to provide a structured foundation for managing internship applications and users.
-
----
+This project is being developed step by step as part of my internship, with new features added as each task is completed.
 
 ## 🚀 Features
 
-### Task 1 – Project Setup
+- **User Registration:** Allows new applicants to create an account.
+- **User Authentication:** Verifies user credentials during login.
+- **Database Integration:** Connects the application to a MySQL database.
+- **Role-Based Access:** Supports separate roles for Applicants and HR Managers.
+- **Session Management:** Maintains user login sessions.
+- **Applicant Dashboard:** Provides an interface for applicants.
+- **HR Dashboard:** Provides a separate interface for HR Managers.
+- **Custom Error Page:** Displays a custom 404 page for unavailable routes.
+- **Modular Code Structure:** Organizes the application into controllers, templates, and static files.
 
-* Flask application setup
-* Project folder structure
-* Flask Blueprints
-* HTML templates
-* Static files
-* MySQL configuration
-* Environment variable configuration
-
-### Task 2 – Database Integration
-
-* MySQL database connection
-* Flask-SQLAlchemy integration
-* Database helper functions
-* Fetch operations
-* Insert operations
-* Update operations
-* Delete operations
-* Database connection testing
-
-### Task 3 – Applicant Registration
-
-* Applicant registration form
-* Name, email, password and qualification fields
-* Email validation
-* Password validation
-* Duplicate email handling
-* Applicant data stored in MySQL
-* Default `Applicant` role assignment
-
-### Task 4 – Authentication & Role-Based Access
-
-* User login
-* Email and password verification
-* Flask session management
-* Applicant dashboard
-* HR Manager dashboard
-* Role-based redirection
-* Protected dashboard routes
-* Logout functionality
-* Login page styling
-
----
+*Note: Features are being implemented incrementally, so the available functionality may change as development continues.*
 
 ## 🛠️ Technologies Used
 
-| Technology       | Purpose                   |
-| ---------------- | ------------------------- |
-| Python           | Backend programming       |
-| Flask            | Web application framework |
-| Flask-SQLAlchemy | Database ORM              |
-| SQLAlchemy       | Database interaction      |
-| PyMySQL          | MySQL connectivity        |
-| MySQL            | Relational database       |
-| HTML             | Web page structure        |
-| CSS              | Web page styling          |
-| Jinja2           | Template rendering        |
-| python-dotenv    | Environment configuration |
-| Git              | Version control           |
-| GitHub           | Source code management    |
-
----
+- **Programming Language:** Python
+- **Backend Framework:** Flask
+- **Database:** MySQL
+- **Database Driver:** PyMySQL
+- **ORM / Database Library:** Flask-SQLAlchemy (installed; usage depends on the current implementation)
+- **Environment Variables:** python-dotenv
+- **Frontend:** HTML, CSS
+- **Version Control:** Git and GitHub
 
 ## 📂 Project Structure
 
@@ -94,244 +39,132 @@ The project is designed to provide a structured foundation for managing internsh
 Internship-Application-Management/
 │
 ├── app.py
-├── requirements.txt
-├── README.md
 ├── .env
+├── requirements.txt
 │
 ├── controllers/
-│   ├── auth_controller.py
 │   ├── applicant_controller.py
 │   ├── hr_controller.py
-│   ├── db_controller.py
-│   └── main_controller.py
-│
-├── models/
-│   ├── __init__.py
-│   ├── user_model.py
-│   └── db_helpers.py
+│   └── db_controller.py
 │
 ├── templates/
 │   ├── login.html
-│   ├── register.html
-│   ├── dashboard.html
-│   ├── hr_dashboard.html
-│   └── internships.html
+│   ├── applicant_dashboard.html
+│   └── hr_dashboard.html
 │
 ├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
+│   └── css/
+│       └── login.css
 │
-└── database/
-    └── schema.sql
+└── README.md
 ```
 
----
+*The structure above is a general example. Keep only the files and folders that actually exist in your repository.*
 
-## 🔐 Authentication Flow
-
-The current authentication process follows this flow:
-
-```text
-                    User
-                      │
-                      ▼
-                    Login
-                      │
-                      ▼
-          Validate Email & Password
-                      │
-                      ▼
-             Create Flask Session
-                      │
-                      ▼
-                Check User Role
-                 ┌────┴────┐
-                 │         │
-                 ▼         ▼
-             Applicant   HR Manager
-                 │         │
-                 ▼         ▼
-          Applicant     HR Dashboard
-          Dashboard
-```
-
----
-
-## 👥 User Roles
-
-### 👤 Applicant
-
-Applicants can:
-
-* Register a new account
-* Login using their credentials
-* Access the Applicant Dashboard
-* Maintain an authenticated session
-* Logout
-
-### 👨‍💼 HR Manager
-
-HR Managers can:
-
-* Login using their credentials
-* Access the HR Dashboard
-* Maintain an authenticated session
-* Logout
-
-### 🔒 Role-Based Protection
-
-The application checks the user's role before allowing access to protected dashboards.
-
-An Applicant cannot directly access the HR Manager dashboard without the required HR Manager role.
-
----
-
-## 🗄️ Database
-
-The application currently uses a MySQL database named:
-
-```text
-internship_db
-```
-
-### Users Table
-
-The `users` table contains the following fields:
-
-| Field           | Description             |
-| --------------- | ----------------------- |
-| `id`            | Unique user ID          |
-| `name`          | User's name             |
-| `email`         | Unique email address    |
-| `password`      | User password           |
-| `qualification` | Applicant qualification |
-| `role`          | User role               |
-
-Example roles:
-
-```text
-Applicant
-HR Manager
-```
-
----
-
-## ⚙️ Installation & Setup
+## ⚙️ Installation and Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/ShreyasSwasti/-Internship-Application-Management.git
 ```
 
-### 2. Open the Project Directory
+### 2. Navigate to the Project Folder
 
 ```bash
-cd Internship-Application-Management
+cd -Internship-Application-Management
 ```
 
-### 3. Install Dependencies
+### 3. Create a Virtual Environment
 
 ```bash
-pip install -r requirements.txt
+python -m venv venv
 ```
 
-### 4. Configure the Database
+Activate it on Windows:
 
-Create the MySQL database:
-
-```sql
-CREATE DATABASE internship_db;
+```bash
+venv\Scripts\activate
 ```
 
-Configure the required database credentials in the `.env` file.
+### 4. Install Dependencies
 
-Example:
+```bash
+python -m pip install -r requirements.txt
+```
 
-```text
+### 5. Configure the Database
+
+- Install and start MySQL.
+- Create a database named `internship_db`.
+- Configure your database connection details using environment variables in the `.env` file.
+
+Example configuration:
+
+```env
 DB_HOST=localhost
-DB_USER=your_username
-DB_PASSWORD=your_password
+DB_USER=your_mysql_username
+DB_PASSWORD=your_mysql_password
 DB_NAME=internship_db
 ```
 
-> ⚠️ Do not commit the `.env` file to GitHub because it may contain database credentials.
+Use the variable names expected by your existing database controller. Do not upload real database passwords or other secrets to GitHub.
 
-### 5. Run the Application
+### 6. Run the Application
 
 ```bash
 python app.py
 ```
 
-The application will be available at:
+Open the application in your browser at:
 
 ```text
 http://127.0.0.1:5001
 ```
 
----
+The port may differ depending on your application configuration.
 
-## 🧪 Testing
+## 🗄️ Database
 
-The following functionality has been tested during development:
+The project uses MySQL to store user information and support authentication.
 
-* ✅ Applicant registration
-* ✅ Applicant data storage
-* ✅ Duplicate email validation
-* ✅ Applicant login
-* ✅ Applicant dashboard
-* ✅ HR Manager login
-* ✅ HR Manager dashboard
-* ✅ Role-based redirection
-* ✅ Protected dashboard routes
-* ✅ Logout functionality
-* ✅ MySQL database connectivity
+The database is named `internship_db`. Database operations are handled through the application's database controller and related modules.
 
----
+## 🔒 Security Considerations
+
+- Store database credentials in environment variables.
+- Keep the `.env` file out of version control.
+- Validate user input before processing it.
+- Use secure password hashing rather than storing plain-text passwords.
+- Apply role-based authorization to protect applicant and HR routes.
 
 ## 📈 Development Progress
 
-| Task                                        | Status      |
-| ------------------------------------------- | ----------- |
-| Task 1 – Project Setup                      | ✅ Completed |
-| Task 2 – Database Integration               | ✅ Completed |
-| Task 3 – Applicant Registration             | ✅ Completed |
-| Task 4 – Authentication & Role-Based Access | ✅ Completed |
-| Task 5 – Internship/Application Management  | ⏳ Pending   |
+The project is being developed incrementally. Current work includes:
+
+- Flask application setup
+- Database connectivity
+- User registration and authentication
+- Session handling
+- Role-based dashboards
+- Custom error handling
+- Ongoing improvements to applicant and HR functionality
+
+## 🎯 Future Improvements
+
+- Internship application submission and tracking
+- HR application review and status updates
+- Search and filter functionality
+- Improved form validation and error handling
+- Enhanced dashboard UI
+- Automated testing and deployment
+
+## 👨‍💻 Author
+
+**Shreyas Swasti**
+
+- GitHub: [ShreyasSwasti](https://github.com/ShreyasSwasti)
 
 ---
 
-## 🔮 Future Improvements
-
-Planned improvements include:
-
-* Password hashing
-* Forgot password functionality
-* Password reset
-* CSRF protection
-* Improved session security
-* Login rate limiting
-* Internship management
-* Internship application submission
-* Application status tracking
-* HR application management
-* Applicant profile management
-* Improved dashboard UI
-* Admin functionality
-
----
-
-## 👨‍💻 Development
-
-This project is being developed as part of an internship project using **Python, Flask, MySQL, HTML, CSS and related web technologies**.
-
-The application is being developed incrementally, with each task adding new functionality to the system.
-
----
-
-### 📌 Current Version
-
-**Task 4 – Authentication & Role-Based Access Completed**
- working on it 
- 
+This project is developed as part of my internship to gain practical experience in Python web development, database integration, authentication, and version control.
