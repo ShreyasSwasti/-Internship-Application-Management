@@ -1,4 +1,7 @@
+
 from controllers.db_controller import fetch_records, insert_record
+from models import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def get_user_by_email(email):
@@ -8,15 +11,15 @@ def get_user_by_email(email):
         WHERE email = :email
     """
 
-    records = fetch_records(
-        query,
-        {"email": email}
-    )
+    records = fetch_records(query, {"email": email})
 
     return records[0] if records else None
 
 
 def create_applicant(name, email, password, qualification):
+    # Hash the password before saving it
+    hashed_password = generate_password_hash(password)
+
     query = """
         INSERT INTO users
         (name, email, password, qualification, role)
@@ -29,7 +32,7 @@ def create_applicant(name, email, password, qualification):
         {
             "name": name,
             "email": email,
-            "password": password,
+            "password": hashed_password,
             "qualification": qualification
         }
     )
@@ -41,7 +44,37 @@ def authenticate_user(email, password):
     if not user:
         return None
 
-    if user["password"] != password:
+    stored_password = user["password"]
+
+    # Verify an already-hashed password
+    try:
+        password_valid = check_password_hash(
+            stored_password,
+            password
+        )
+    except (ValueError, TypeError):
+        password_valid = False
+
+    # Upgrade old plain-text passwords after successful login
+    if not password_valid and stored_password == password:
+        password_valid = True
+
+        new_hash = generate_password_hash(password)
+
+        db.session.execute(
+            db.text("""
+                UPDATE users
+                SET password = :password
+                WHERE id = :id
+            """),
+            {
+                "password": new_hash,
+                "id": user["id"]
+            }
+        )
+        db.session.commit()
+
+    if not password_valid:
         return None
 
     return {
