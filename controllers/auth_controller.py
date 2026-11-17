@@ -1,5 +1,13 @@
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    session
+)
 
 from models.user_model import (
     get_user_by_email,
@@ -15,12 +23,12 @@ def register():
 
     if request.method == "POST":
 
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        qualification = request.form.get("qualification")
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        qualification = request.form.get("qualification", "").strip()
 
-        # Check required fields
+        # Validate required fields
         if not all([name, email, password, qualification]):
             flash("Please fill in all fields", "error")
             return render_template("register.html")
@@ -41,6 +49,7 @@ def register():
         )
 
         flash("Registration successful. Please login.", "success")
+
         return redirect(url_for("auth.login"))
 
     return render_template("register.html")
@@ -51,14 +60,15 @@ def login():
 
     if request.method == "POST":
 
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
 
+        # Validate login fields
         if not email or not password:
             flash("Please enter email and password", "error")
             return render_template("login.html")
 
-        # Authenticate using password hashing
+        # Authenticate user
         user = authenticate_user(email, password)
 
         if not user:
@@ -68,13 +78,13 @@ def login():
         # Clear previous session data
         session.clear()
 
-        # Store authenticated user details
+        # Store authenticated user information
         session["user_id"] = user["id"]
         session["user_name"] = user["name"]
         session["user_email"] = user["email"]
         session["role"] = user["role"]
 
-        # Redirect according to user role
+        # Redirect based on user role
         if user["role"] == "HR":
             return redirect(url_for("hr.dashboard"))
 
@@ -83,7 +93,7 @@ def login():
     return render_template("login.html")
 
 
-@auth_bp.route("/logout")
+@auth_bp.route("/logout", methods=["GET", "POST"])
 def logout():
 
     session.clear()
