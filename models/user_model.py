@@ -17,7 +17,7 @@ def get_user_by_email(email):
 
 
 def create_applicant(name, email, password, qualification):
-    # Hash the password before saving it
+    # Generate a secure password hash
     hashed_password = generate_password_hash(password)
 
     query = """
@@ -27,18 +27,18 @@ def create_applicant(name, email, password, qualification):
         (:name, :email, :password, :qualification, 'Applicant')
     """
 
-    insert_record(
-        query,
-        {
-            "name": name,
-            "email": email,
-            "password": hashed_password,
-            "qualification": qualification
-        }
-    )
+    params = {
+        "name": name,
+        "email": email,
+        "password": hashed_password,
+        "qualification": qualification
+    }
+
+    return insert_record(query, params)
 
 
 def authenticate_user(email, password):
+    # Find user using email
     user = get_user_by_email(email)
 
     if not user:
@@ -46,7 +46,7 @@ def authenticate_user(email, password):
 
     stored_password = user["password"]
 
-    # Verify an already-hashed password
+    # Verify the submitted password against its hash
     try:
         password_valid = check_password_hash(
             stored_password,
@@ -55,28 +55,10 @@ def authenticate_user(email, password):
     except (ValueError, TypeError):
         password_valid = False
 
-    # Upgrade old plain-text passwords after successful login
-    if not password_valid and stored_password == password:
-        password_valid = True
-
-        new_hash = generate_password_hash(password)
-
-        db.session.execute(
-            db.text("""
-                UPDATE users
-                SET password = :password
-                WHERE id = :id
-            """),
-            {
-                "password": new_hash,
-                "id": user["id"]
-            }
-        )
-        db.session.commit()
-
     if not password_valid:
         return None
 
+    # Return authenticated user details
     return {
         "id": user["id"],
         "name": user["name"],
