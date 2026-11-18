@@ -1,24 +1,54 @@
 
 from controllers.db_controller import fetch_records, insert_record
-from models import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
 
 def get_user_by_email(email):
+    """
+    Retrieve a user using their email address.
+    """
+
+    if not email or not isinstance(email, str):
+        return None
+
     query = """
         SELECT id, name, email, password, qualification, role
         FROM users
         WHERE email = :email
+        LIMIT 1
     """
 
-    records = fetch_records(query, {"email": email})
+    records = fetch_records(
+        query,
+        {"email": email.strip().lower()}
+    )
 
     return records[0] if records else None
 
 
 def create_applicant(name, email, password, qualification):
-    # Generate a secure password hash
-    hashed_password = generate_password_hash(password)
+    """
+    Create a new applicant with a securely hashed password.
+    """
+
+    # Validate input
+    if not all([name, email, password, qualification]):
+        raise ValueError("All applicant fields are required.")
+
+    if not isinstance(password, str) or len(password) < 8:
+        raise ValueError("Password must contain at least 8 characters.")
+
+    # Normalize email
+    email = email.strip().lower()
+
+    # Generate secure password hash
+    hashed_password = generate_password_hash(
+        password,
+        method="scrypt"
+    )
 
     query = """
         INSERT INTO users
@@ -28,17 +58,24 @@ def create_applicant(name, email, password, qualification):
     """
 
     params = {
-        "name": name,
+        "name": name.strip(),
         "email": email,
         "password": hashed_password,
-        "qualification": qualification
+        "qualification": qualification.strip()
     }
 
     return insert_record(query, params)
 
 
 def authenticate_user(email, password):
-    # Find user using email
+    """
+    Authenticate a user using email and password.
+    Returns user details if authentication succeeds.
+    """
+
+    if not email or not password:
+        return None
+
     user = get_user_by_email(email)
 
     if not user:
@@ -46,19 +83,22 @@ def authenticate_user(email, password):
 
     stored_password = user["password"]
 
-    # Verify the submitted password against its hash
+    if not stored_password or not isinstance(stored_password, str):
+        return None
+
     try:
         password_valid = check_password_hash(
             stored_password,
             password
         )
+
     except (ValueError, TypeError):
         password_valid = False
 
     if not password_valid:
         return None
 
-    # Return authenticated user details
+    # Return only the details required by the application.
     return {
         "id": user["id"],
         "name": user["name"],
