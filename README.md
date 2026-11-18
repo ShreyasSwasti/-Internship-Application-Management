@@ -1,65 +1,89 @@
-# Internship Application Management System
+# 💼 Internship Application Management System
 
-A web-based application built using Python Flask and MySQL to manage internship applications and provide separate access for Applicants and HR Managers.
+A web-based Internship Application Management System built using **Python Flask and MySQL**. The application is designed to simplify the internship recruitment process by allowing applicants to register, apply for internships, and track their applications while HR managers manage internship opportunities and applications.
 
-## 📌 Project Overview
+## 🚀 Project Overview
 
-The Internship Application Management System is developed to simplify the process of managing internship applications. It allows applicants to register and log in, while HR Managers can access a separate dashboard to manage application-related activities.
+The Internship Application Management System aims to provide a centralized platform for managing internship recruitment.
 
-This project is being developed step by step as part of my internship, with new features added as each task is completed.
-
-## 🚀 Features
-
-- **User Registration:** Allows new applicants to create an account.
-- **User Authentication:** Verifies user credentials during login.
-- **Database Integration:** Connects the application to a MySQL database.
-- **Role-Based Access:** Supports separate roles for Applicants and HR Managers.
-- **Session Management:** Maintains user login sessions.
-- **Applicant Dashboard:** Provides an interface for applicants.
-- **HR Dashboard:** Provides a separate interface for HR Managers.
-- **Custom Error Page:** Displays a custom 404 page for unavailable routes.
-- **Modular Code Structure:** Organizes the application into controllers, templates, and static files.
-
-*Note: Features are being implemented incrementally, so the available functionality may change as development continues.*
+The project is being developed incrementally, with a focus on backend development, database management, authentication, security, and user-friendly interfaces.
 
 ## 🛠️ Technologies Used
 
-- **Programming Language:** Python
-- **Backend Framework:** Flask
-- **Database:** MySQL
-- **Database Driver:** PyMySQL
-- **ORM / Database Library:** Flask-SQLAlchemy (installed; usage depends on the current implementation)
-- **Environment Variables:** python-dotenv
-- **Frontend:** HTML, CSS
-- **Version Control:** Git and GitHub
+| Technology | Purpose |
+|---|---|
+| Python | Backend programming |
+| Flask | Web framework |
+| MySQL | Database management |
+| PyMySQL | Database connectivity |
+| HTML5 | Frontend structure |
+| CSS3 | Styling |
+| Werkzeug | Password hashing and security |
+| Git & GitHub | Version control |
 
-## 📂 Project Structure
+## ✨ Features
+
+### Implemented Features
+
+- Flask application setup.
+- MySQL database connectivity.
+- Applicant registration.
+- User login and logout.
+- Session management.
+- Role-based authentication.
+- Separate Applicant and HR dashboards.
+- Password hashing using Werkzeug.
+- Password verification during login.
+- Input validation for registration and login.
+- Custom 404 error page.
+
+### Planned Features
+
+- Internship posting and management.
+- Applicants can browse available internships.
+- Online internship application submission.
+- Resume upload functionality.
+- Application status tracking.
+- HR application review system.
+- Accept or reject internship applications.
+- Administrator dashboard.
+- User management.
+- Improved security and validation.
+- Responsive user interface.
+
+## 📁 Project Structure
 
 ```text
 Internship-Application-Management/
 │
-├── app.py
-├── .env
-├── requirements.txt
-│
 ├── controllers/
+│   ├── auth_controller.py
+│   ├── db_controller.py
 │   ├── applicant_controller.py
-│   ├── hr_controller.py
-│   └── db_controller.py
+│   └── hr_controller.py
+│
+├── models/
+│   └── user_model.py
 │
 ├── templates/
 │   ├── login.html
+│   ├── register.html
 │   ├── applicant_dashboard.html
-│   └── hr_dashboard.html
+│   ├── hr_dashboard.html
+│   └── 404.html
 │
 ├── static/
-│   └── css/
-│       └── login.css
+│   ├── css/
+│   ├── js/
+│   └── images/
 │
+├── app.py
+├── config.py
+├── requirements.txt
 └── README.md
 ```
 
-*The structure above is a general example. Keep only the files and folders that actually exist in your repository.*
+*Note: The folder structure may change as development continues.*
 
 ## ⚙️ Installation and Setup
 
@@ -69,7 +93,7 @@ Internship-Application-Management/
 git clone https://github.com/ShreyasSwasti/-Internship-Application-Management.git
 ```
 
-### 2. Navigate to the Project Folder
+### 2. Navigate to the Project Directory
 
 ```bash
 cd -Internship-Application-Management
@@ -90,25 +114,18 @@ venv\Scripts\activate
 ### 4. Install Dependencies
 
 ```bash
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-### 5. Configure the Database
+### 5. Configure MySQL Database
 
-- Install and start MySQL.
-- Create a database named `internship_db`.
-- Configure your database connection details using environment variables in the `.env` file.
+Create a MySQL database:
 
-Example configuration:
-
-```env
-DB_HOST=localhost
-DB_USER=your_mysql_username
-DB_PASSWORD=your_mysql_password
-DB_NAME=internship_db
+```sql
+CREATE DATABASE internship_db;
 ```
 
-Use the variable names expected by your existing database controller. Do not upload real database passwords or other secrets to GitHub.
+Configure your database credentials using environment variables. Do not upload database passwords or secret keys to GitHub.
 
 ### 6. Run the Application
 
@@ -116,55 +133,46 @@ Use the variable names expected by your existing database controller. Do not upl
 python app.py
 ```
 
-Open the application in your browser at:
+Open your browser:
 
 ```text
 http://127.0.0.1:5001
 ```
 
-The port may differ depending on your application configuration.
+## 🔐 Security
 
-## 🗄️ Database
+Security improvements being implemented include:
 
-The project uses MySQL to store user information and support authentication.
+- Password hashing using Werkzeug's `generate_password_hash()`.
+- Password verification using `check_password_hash()`.
+- Parameterized SQL queries.
+- Input validation.
+- Session management.
+- Role-based access control.
 
-The database is named `internship_db`. Database operations are handled through the application's database controller and related modules.
+## 🎯 Project Goals
 
-## 🔒 Security Considerations
+The main goal of this project is to develop a practical internship recruitment platform while improving my understanding of:
 
-- Store database credentials in environment variables.
-- Keep the `.env` file out of version control.
-- Validate user input before processing it.
-- Use secure password hashing rather than storing plain-text passwords.
-- Apply role-based authorization to protect applicant and HR routes.
+- Python Flask development.
+- Backend application architecture.
+- Relational database management.
+- Authentication and authorization.
+- Web application security.
+- Real-world software development practices.
 
-## 📈 Development Progress
-
-The project is being developed incrementally. Current work includes:
-
-- Flask application setup
-- Database connectivity
-- User registration and authentication
-- Session handling
-- Role-based dashboards
-- Custom error handling
-- Ongoing improvements to applicant and HR functionality
-
-## 🎯 Future Improvements
-
-- Internship application submission and tracking
-- HR application review and status updates
-- Search and filter functionality
-- Improved form validation and error handling
-- Enhanced dashboard UI
-- Automated testing and deployment
-
-## 👨‍💻 Author
+## 👨‍💻 Developer
 
 **Shreyas Swasti**
 
-- GitHub: [ShreyasSwasti](https://github.com/ShreyasSwasti)
+- GitHub: [@ShreyasSwasti](https://github.com/ShreyasSwasti)
+
+## 📌 Project Status
+
+**Currently under development.**
+
+New features, improvements, and security enhancements are being added progressively.
 
 ---
 
-This project is developed as part of my internship to gain practical experience in Python web development, database integration, authentication, and version control.
+⭐ If you find this project interesting, feel free to explore the repository and share suggestions!
