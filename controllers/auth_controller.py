@@ -1,4 +1,6 @@
 
+import re
+
 from flask import (
     Blueprint,
     render_template,
@@ -9,6 +11,8 @@ from flask import (
     session
 )
 
+from werkzeug.exceptions import BadRequest
+
 from models.user_model import (
     get_user_by_email,
     create_applicant,
@@ -16,6 +20,12 @@ from models.user_model import (
 )
 
 auth_bp = Blueprint("auth", __name__)
+
+
+def is_valid_email(email):
+    """Basic email format validation."""
+    pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+    return bool(re.match(pattern, email))
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -26,31 +36,65 @@ def register():
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        qualification = request.form.get("qualification", "").strip()
+        qualification = request.form.get(
+            "qualification", ""
+        ).strip()
 
         # Validate required fields
         if not all([name, email, password, qualification]):
-            flash("Please fill in all fields", "error")
+            flash("Please fill in all fields.", "error")
             return render_template("register.html")
 
-        # Check whether email already exists
-        existing_user = get_user_by_email(email)
-
-        if existing_user:
-            flash("Email already registered", "error")
+        # Validate name
+        if len(name) > 100:
+            flash("Name must not exceed 100 characters.", "error")
             return render_template("register.html")
 
-        # Create applicant with hashed password
-        create_applicant(
-            name,
-            email,
-            password,
-            qualification
-        )
+        # Validate email
+        if len(email) > 254 or not is_valid_email(email):
+            flash("Please enter a valid email address.", "error")
+            return render_template("register.html")
 
-        flash("Registration successful. Please login.", "success")
+        # Validate password
+        if len(password) < 8:
+            flash("Password must contain at least 8 characters.", "error")
+            return render_template("register.html")
 
-        return redirect(url_for("auth.login"))
+        # Validate qualification
+        if len(qualification) > 150:
+            flash("Qualification is too long.", "error")
+            return render_template("register.html")
+
+        try:
+            # Check for existing account
+            existing_user = get_user_by_email(email)
+
+            if existing_user:
+                flash("Email is already registered.", "error")
+                return render_template("register.html")
+
+            # Create applicant
+            create_applicant(
+                name,
+                email,
+                password,
+                qualification
+            )
+
+            flash(
+                "Registration successful. Please login.",
+                "success"
+            )
+
+            return redirect(url_for("auth.login"))
+
+        except Exception:
+            # Log the exception on the server in production.
+            flash(
+                "Registration could not be completed. Please try again.",
+                "error"
+            )
+            return render_template("register.html"), 500
 
     return render_template("register.html")
 
@@ -65,17 +109,25 @@ def login():
 
         # Validate login fields
         if not email or not password:
-            flash("Please enter email and password", "error")
+            flash("Please enter your email and password.", "error")
             return render_template("login.html")
 
-        # Authenticate user
-        user = authenticate_user(email, password)
+        try:
+            # Authenticate user
+            user = authenticate_user(email, password)
+
+        except Exception:
+            flash(
+                "Login is temporarily unavailable. Please try again.",
+                "error"
+            )
+            return render_template("login.html"), 500
 
         if not user:
-            flash("Invalid email or password", "error")
+            flash("Invalid email or password.", "error")
             return render_template("login.html")
 
-        # Clear previous session data
+        # Prevent session fixation
         session.clear()
 
         # Store authenticated user information
@@ -84,20 +136,28 @@ def login():
         session["user_email"] = user["email"]
         session["role"] = user["role"]
 
-        # Redirect based on user role
-        if user["role"] == "HR":
+        # Redirect according to role
+        role = str(user["role"]).strip().lower()
+
+        if role in ("hr", "hr manager"):
             return redirect(url_for("hr.dashboard"))
 
-        return redirect(url_for("applicant.dashboard"))
+        if role == "applicant":
+            return redirect(url_for("applicant.dashboard"))
+
+        # Reject unexpected account roles
+        session.clear()
+        flash("Your account has an invalid role.", "error")
+        return redirect(url_for("auth.login"))
 
     return render_template("login.html")
 
 
-@auth_bp.route("/logout", methods=["GET", "POST"])
+@auth_bp.route("/logout", methods=["POST"])
 def logout():
 
     session.clear()
 
-    flash("You have been logged out successfully", "success")
+    flash("You have been logged out successfully.", "success")
 
     return redirect(url_for("auth.login"))
